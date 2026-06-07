@@ -18,9 +18,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: var;
+            background-color: var(--bg-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var;
+            color: var(--text-color);
             overflow: hidden;
             transition: background 0.3s;
         }
@@ -28,14 +28,15 @@
         .container {
             text-align: center;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
             max-width: 90%;
             width: 400px;
             position: relative;
             z-index: 2;
+            transition: all 0.5s ease;
         }
 
         h1 {
@@ -68,8 +69,12 @@
             color: white;
         }
 
+        #yesBtn:hover {
+            transform: scale(1.1);
+        }
+
         #noBtn {
-            background-color: var;
+            background-color: var(--accent-color);
             color: white;
         }
 
@@ -107,7 +112,7 @@
             box-shadow: 0 0 20px rgba(255, 51, 51, 0.4);
         }
 
-        /* --- Floating Hearts Background --- */
+        /* --- Floating Background Animation --- */
         .heart-bg {
             position: fixed;
             top: 0;
@@ -121,7 +126,6 @@
         .floating-heart {
             position: absolute;
             font-size: 1.5rem;
-            color: rgba(255, 77, 109, 0.6);
             animation: floatUp 4s linear infinite;
             bottom: -50px;
         }
@@ -161,7 +165,6 @@
         let noCount = 0;
         let yesScale = 1;
 
-        // Array of glitching responses for the first 4 clicks
         const glitchPrompts = [
             "Are you sure? 🤔",
             "Error: Wrong choice... 🔐",
@@ -173,41 +176,32 @@
             noCount++;
 
             if (noCount <= 4) {
-                // Step 1: Glitch phase (Clicks 1-4)
                 questionText.textContent = glitchPrompts[noCount - 1];
                 
-                // Add CSS glitch effects to text and buttons
                 questionText.classList.add('glitch');
                 yesBtn.classList.add('glitch');
                 noBtn.classList.add('glitch');
 
-                // Make the Yes button massive so it's easier to hit
                 yesScale += 0.4;
                 yesBtn.style.transform = `scale(${yesScale})`;
 
-                // Change button texts playfully during the mystery glitch phase
                 noBtn.textContent = "N-No?¿";
                 yesBtn.textContent = "YES!";
 
-                // Remove glitch animation briefly between clicks to reset the shake
                 setTimeout(() => {
                     questionText.classList.remove('glitch');
                 }, 400);
 
             } else if (noCount === 5) {
-                // Step 2: 5th Click - System Error / "New Page" Transition
                 questionText.classList.remove('glitch');
                 yesBtn.classList.remove('glitch');
                 noBtn.classList.remove('glitch');
 
-                // Transform layout to look like a critical system error screen
                 body.classList.add('error-bg');
                 mainContainer.classList.add('error-box');
                 
-                // Show the "minimum you give note in error" style layout
                 questionText.innerHTML = "CRITICAL ERROR<br><small>Status: Friend-zone Overflow</small>";
                 
-                // Set up the "New Page" redirection prompt
                 noBtn.style.display = 'none';
                 yesBtn.style.transform = 'scale(1)';
                 yesBtn.style.backgroundColor = '#ff3333';
@@ -215,48 +209,49 @@
             }
         });
 
-        // The Success / New Page view (Triggered by Yes or the Error Fix button)
         function loadSuccessPage() {
-            // Reset background and box styling back to gorgeous mode
             body.classList.remove('error-bg');
             body.style.backgroundColor = '#ffe5ec';
             
-            mainContainer.className = 'container'; // Reset classes
-            mainContainer.style.background = 'rgba(255, 255, 255, 0.9)';
-            mainContainer.style.border = 'none';
+            mainContainer.className = 'container'; 
+            mainContainer.style.background = 'rgba(255, 255, 255, 0.95)';
             mainContainer.style.color = '#4a4a4a';
 
-            // 1. Teddy Bear Hugging Animation (Using high-quality verified platform GIFs/Vectors)
-            questionText.innerHTML = "Yay! Best Friends Forever! 🧸💖";
-            
-            // Injecting a lovely hugging teddy bear animation/graphic
+            // Updated with a highly reliable, incredibly cute animated emoji presentation!
             mainContainer.innerHTML = `
-                <h1 style="color: #ff4d6d; font-size: 2.2rem;">Yay! Best Friends Forever! 🧸💖</h1>
-                <div style="width: 100%; max-width: 250px; margin: 20px auto;">
-                    <img src="https://media.tenor.com/gU_NPIwX_BIAAAAi/bear-panda.gif" 
-                         alt="Teddies Hugging" 
-                         style="width: 100%; border-radius: 15px;">
+                <h1 style="color: #ff4d6d; font-size: 2.2rem; margin-bottom: 15px;">Yay! Best Friends Forever!</h1>
+                <div style="font-size: 5rem; margin: 20px 0; animation: pulse 1.5s infinite;">
+                    🧸🤗🧸
                 </div>
-                <p style="font-weight: 500; color: #666;">System repaired successfully!</p>
+                <p style="font-weight: 600; color: #ff758f; font-size: 1.2rem;">System repaired with 100% Love!</p>
             `;
 
-            // 2. Start the Background Floating Hearts Animation Loop
-            setInterval(createHeart, 300);
+            // Add a pulse animation style for the hugging teddies
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.15); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            setInterval(createHeart, 200);
         }
 
-        // Attach success trigger to the Yes action
         yesBtn.addEventListener('click', loadSuccessPage);
 
-        // Helper function to dynamically generate background animations
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('floating-heart');
-            heart.innerHTML = '🌸'; // Soft aesthetic petals/hearts
-            if(Math.random() > 0.5) heart.innerHTML = '💖';
+            
+            const items = ['🌸', '💖', '🧸', '✨', '💐'];
+            heart.innerHTML = items[Math.floor(Math.random() * items.length)];
             
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 2 + 3 + 's'; // 3-5 seconds
-            heart.style.fontSize = Math.random() * 1.5 + 1 + 'rem';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's'; 
+            heart.style.fontSize = Math.random() * 1.5 + 1.2 + 'rem';
             
             heart.style.position = 'absolute';
             heart.style.bottom = '-50px';
